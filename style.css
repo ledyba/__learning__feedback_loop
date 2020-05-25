@@ -1,0 +1,10 @@
+html, body, #contents {
+  margin: 0px;
+  padding: 0px;
+}
+
+.selecter {
+  box-sizing: border-box;
+  width: 80vw;
+  padding: 1em;
+}
