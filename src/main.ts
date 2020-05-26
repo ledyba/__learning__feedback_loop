@@ -11,8 +11,12 @@ function resize() {
 
 function exec(modelName: string) {
   switch(modelName) {
+    case "hello-feedback":
+      break;
     case "cache-hit":
-      console.log(modelName);
+      break;
+    default:
+      alert(`Unknown model: ${modelName}`);
       break;
   }
 }
