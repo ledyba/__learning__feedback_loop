@@ -1,17 +1,17 @@
 import {ChartData} from 'chart.js';
 
 export interface Input {
-  step(): number;
+  step(at: number, dt: number): number;
   inspect: ChartData;
 }
 
 export interface Output {
-  step(output: number): void;
+  step(at: number, dt: number, output: number): void;
   inspect: ChartData;
 }
 
 export interface Block {
-  step(input: number): number;
+  step(at: number, dt: number, input: number): number;
   inspect: ChartData[];
 }
 
@@ -24,6 +24,13 @@ export class System {
     this.block = block;
     this.output = output;
   }
+  exec(dt: number, count: number): ChartData[] {
+    for(let i = 0; i < count; ++i) {
+      const at = dt * i;
+      this.output.step(at, dt, this.block.step(at, dt, this.input.step(at, dt)));
+    }
+    return [this.input.inspect, ...this.block.inspect, this.output.inspect]
+  }
 }
 
 export class Connect implements Block {
@@ -33,8 +40,8 @@ export class Connect implements Block {
     this.from = from;
     this.to = to;
   }
-  step(input: number): number {
-    return this.to.step(this.from.step(input));
+  step(at: number, dt: number, input: number): number {
+    return this.to.step(at, dt, this.from.step(at, dt, input));
   }
   get inspect(): ChartData[] {
     const f = this.from.inspect;
