@@ -88,20 +88,18 @@ export function loop(forward: Block, backward: Block): Loop {
 }
 
 export class Invert implements Block {
-  private block: Block;
-  constructor(block: Block) {
-    this.block = block;
+  constructor() {
   }
   step(at: number, dt: number, input: number): number {
-    return -this.block.step(at, dt, input);
+    return -input;
   }
   get inspect(): ChartDataSets[] {
-    return this.block.inspect;
+    return [];
   }
 }
 
-export function invert(block:Block):Invert {
-  return new Invert(block);
+export function invert():Invert {
+  return new Invert();
 }
 
 /******************************************************************************
@@ -143,7 +141,7 @@ export class ConstantSetpoint implements Input {
     return this.recorder.intoDataSet();
   }
 }
-export function constantInput(setPoint: number): ConstantSetpoint {
+export function constantSetpoint(setPoint: number): ConstantSetpoint {
   return new ConstantSetpoint(setPoint);
 }
 

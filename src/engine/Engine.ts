@@ -1,4 +1,4 @@
-import Chart from 'chart.js';
+import Chart, { ChartData } from 'chart.js';
 
 export class Engine {
   private element: HTMLCanvasElement;
@@ -11,5 +11,9 @@ export class Engine {
   }
   onResize() {
     this.chart.resize();
+  }
+  updateData(data: ChartData) {
+    this.chart.data = data;
+    this.chart.update();
   }
 }

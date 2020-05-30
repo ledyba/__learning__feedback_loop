@@ -1,5 +1,6 @@
-import Chart from 'chart.js';
+import Chart, { ChartData, LinearTickOptions } from 'chart.js';
 import { Engine} from './engine/Engine';
+import { System, ConstantSetpoint, invert, defaultOutput, constantSetpoint } from './engine/System';
 
 let engine: Engine | null;
 
@@ -9,15 +10,27 @@ function resize() {
   }
 }
 
-function exec(modelName: string) {
+function helloFeedback(): ChartData {
+  const input = constantSetpoint(0.5);
+  const block = invert();
+  const output = defaultOutput();
+  const system = new System(input, block, output);
+  return system.exec(0.1, 1000);
+}
+
+function cacheHit(): ChartData {
+  return helloFeedback();
+}
+
+function exec(modelName: string): ChartData | null {
   switch(modelName) {
     case "hello-feedback":
-      break;
+      return helloFeedback();
     case "cache-hit":
-      break;
+      return cacheHit();
     default:
       alert(`Unknown model: ${modelName}`);
-      break;
+      return null;
   }
 }
 
@@ -26,15 +39,7 @@ function main() {
   const ctx: CanvasRenderingContext2D = graph.getContext('2d')!;
   const chart = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
-      datasets: [{
-        borderColor: 'rgba(255, 0, 0, 0.5)',
-        fill: false,
-        label: 'test',
-        data: [12, 19, 3, 5, 2, 3],
-      }]
-    },
+    data: {},
     options: {
       scales: {
         xAxes: [
@@ -42,7 +47,8 @@ function main() {
             //type: 'linear',
             position: 'bottom',
             ticks: {
-              //beginAtZero: true,
+              beginAtZero: true,
+              maxTicksLimit: 10,
             }
           }
         ],
@@ -50,8 +56,7 @@ function main() {
           {
             type: 'linear',
             ticks: {
-              beginAtZero: true,
-            },
+            }
           }
         ],
       }
@@ -61,7 +66,10 @@ function main() {
   window.addEventListener('resize', resize);
   document.getElementById('exec-button')!.addEventListener('click', (ev) => {
     const opt = document.getElementById('exec-selecter') as HTMLSelectElement;
-    exec(opt.value);
+    const data = exec(opt.value);
+    if(data != null) {
+      engine?.updateData(data);
+    }
   });
 }
 
