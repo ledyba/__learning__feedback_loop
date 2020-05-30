@@ -18,7 +18,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -m "Build scripts" -a
+        git add --force --all dist
+        git commit -m "Build scripts"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
