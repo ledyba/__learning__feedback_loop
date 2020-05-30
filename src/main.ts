@@ -29,7 +29,7 @@ function main() {
     data: {
       labels: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
       datasets: [{
-        borderColor: 'rgba(0, 0, 0, 0.5)',
+        borderColor: 'rgba(255, 0, 0, 0.5)',
         fill: false,
         label: 'test',
         data: [12, 19, 3, 5, 2, 3],
@@ -37,11 +37,23 @@ function main() {
     },
     options: {
       scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
+        xAxes: [
+          {
+            //type: 'linear',
+            position: 'bottom',
+            ticks: {
+              //beginAtZero: true,
+            }
           }
-        }]
+        ],
+        yAxes: [
+          {
+            type: 'linear',
+            ticks: {
+              beginAtZero: true,
+            },
+          }
+        ],
       }
     }
   });
