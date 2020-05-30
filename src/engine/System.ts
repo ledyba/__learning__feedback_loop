@@ -87,6 +87,27 @@ export function loop(forward: Block, backward: Block): Loop {
   return new Loop(forward, backward);
 }
 
+export class Mix implements Block {
+  private blocks: Array<Block>;
+  constructor(...blocks: Array<Block>) {
+    this.blocks = blocks;
+  }
+  step(at: number, dt: number, input: number): number {
+    throw new Error("Method not implemented.");
+  }
+  get inspect(): ChartDataSets[] {
+    const dataSet: ChartDataSets[] = [];
+    for(const block of this.blocks) {
+      dataSet.concat(block.inspect);
+    }
+    return dataSet;
+  }
+}
+
+export function mix(...blocks: Array<Block>):Mix {
+  return new Mix(...blocks);
+}
+
 export class Invert implements Block {
   constructor() {
   }
