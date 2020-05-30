@@ -8,7 +8,7 @@ class Buffer implements Block {
   step(at: number, dt: number, input: number): number {
     input |= 0;
     this.buffer += input;
-    // consumed rundomly
+    // consumed randomly
     this.buffer -= Math.random() * 10;
     this.buffer = Math.max(0, this.buffer);
     // record
