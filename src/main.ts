@@ -1,6 +1,6 @@
 import Chart, { ChartData, LinearTickOptions } from 'chart.js';
 import { Engine} from './engine/Engine';
-import { System, ConstantSetpoint, invert, defaultOutput, constantSetpoint } from './engine/System';
+import helloFeedback from './cases/01HelloFeedback'
 
 let engine: Engine | null;
 
@@ -10,31 +10,19 @@ function resize() {
   }
 }
 
-function helloFeedback(): ChartData {
-  const input = constantSetpoint(0.5);
-  const block = invert();
-  const output = defaultOutput();
-  const system = new System(input, block, output);
-  return system.exec(0.1, 1000);
-}
-
-function cacheHit(): ChartData {
-  return helloFeedback();
-}
-
 function exec(modelName: string): ChartData | null {
   switch(modelName) {
     case "hello-feedback":
       return helloFeedback();
     case "cache-hit":
-      return cacheHit();
+      return helloFeedback();
     default:
       alert(`Unknown model: ${modelName}`);
       return null;
   }
 }
 
-function main() {
+function createEngine(): Engine {
   const graph = document.getElementById('graph')! as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = graph.getContext('2d')!;
   const chart = new Chart(ctx, {
@@ -62,7 +50,11 @@ function main() {
       }
     }
   });
-  engine = new Engine(graph, ctx, chart);
+  return new Engine(graph, ctx, chart);
+}
+
+function main() {
+  engine = createEngine();
   window.addEventListener('resize', resize);
   document.getElementById('exec-button')!.addEventListener('click', (ev) => {
     const opt = document.getElementById('exec-selecter') as HTMLSelectElement;
