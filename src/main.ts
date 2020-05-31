@@ -1,6 +1,7 @@
 import Chart, { ChartData, LinearTickOptions } from 'chart.js';
 import { Engine} from './engine/Engine';
-import helloFeedback from './cases/01HelloFeedback'
+import helloFeedback from './cases/00HelloFeedback'
+import simpleFactory from './cases/01SimpleFactory';
 
 let engine: Engine | null;
 
@@ -12,8 +13,12 @@ function resize() {
 
 function exec(modelName: string): ChartData | null {
   switch(modelName) {
-    case "hello-feedback":
+    case "00-hello-feedback":
       return helloFeedback();
+    case "01-simple-factory-undershoot":
+      return simpleFactory(0.5);
+    case "01-simple-factory-overshoot":
+      return simpleFactory(1.5);
     case "cache-hit":
       return helloFeedback();
     default:
