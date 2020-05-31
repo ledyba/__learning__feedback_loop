@@ -123,6 +123,31 @@ export function invert():Invert {
   return new Invert();
 }
 
+export class Delay implements Block {
+  private delay: number;
+  private history: Array<number>;
+  private idx: number;
+  constructor(delay: number) {
+    this.delay = delay | 0;
+    this.history = new Array(this.delay);
+    this.idx = 0;
+    this.history = this.history.map(() => 0);
+  }
+  step(at: number, dt: number, input: number): number {
+    const val = this.history[this.idx];
+    this.history[this.idx] = input;
+    this.idx = (this.idx + 1) % this.history.length;
+    return val;
+  }
+  get inspect(): ChartDataSets[] {
+    return [];
+  }
+}
+
+export function delay(time: number):Delay {
+  return new Delay(time);
+}
+
 /******************************************************************************
  * Utility implementations
  ******************************************************************************/
