@@ -21,10 +21,10 @@ class Buffer implements Block {
   }
 }
 
-export default function helloFeedback(delayStep: number): ChartData {
+export default function helloFeedback(gain: number, delayStep: number, executeStep:number): ChartData {
   const input = constantSetpoint(1000);
   const forward = (()=>{
-    const controller = new ProportionalBlock(1.5);
+    const controller = new ProportionalBlock(gain);
     const plant = new Buffer();
     return connect(controller, plant);
   })();
@@ -37,5 +37,5 @@ export default function helloFeedback(delayStep: number): ChartData {
   const block = loop(forward, backward);
   const output = defaultOutput();
   const system = new System(input, block, output);
-  return system.exec(1, 30);
+  return system.exec(1, executeStep);
 }

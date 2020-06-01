@@ -13,10 +13,16 @@ function resize() {
 
 function exec(modelName: string): ChartData | null {
   switch(modelName) {
-    case "00-hello-feedback":
-      return helloFeedback(0);
-    case "00-hello-feedback-with-delay":
-      return helloFeedback(2);
+    case "00-hello-feedback (P gain=0.5, no delay)":
+      return helloFeedback(0.5, 0, 50);
+    case "00-hello-feedback (P gain=1.5, no delay)":
+      return helloFeedback(1.5, 0, 50);
+    case "00-hello-feedback (P gain=0.5, 3 steps delay)":
+      return helloFeedback(0.5, 3, 100);
+    case "00-hello-feedback (P gain=1.5, 3 steps delay)":
+      return helloFeedback(1.5, 3, 100);
+    case "00-hello-feedback (P gain=0.25, 3 steps delay)":
+      return helloFeedback(0.25, 3, 100);
     case "01-simple-factory-undershoot":
       return simpleFactory(0.5);
     case "01-simple-factory-overshoot":
@@ -61,15 +67,32 @@ function createEngine(): Engine {
   return new Engine(graph, ctx, chart);
 }
 
+function run() {
+  const opt = document.getElementById('exec-selecter')! as HTMLFormElement;
+  const data = exec(opt.value);
+  if(data != null) {
+    engine?.updateData(data);
+  }
+
+}
+
 function main() {
   engine = createEngine();
   window.addEventListener('resize', resize);
-  document.getElementById('exec-button')!.addEventListener('click', (ev) => {
-    const opt = document.getElementById('exec-selecter') as HTMLSelectElement;
-    const data = exec(opt.value);
-    if(data != null) {
-      engine?.updateData(data);
+  const form = document.getElementById('exec-form')! as HTMLFormElement;
+  const opt = document.getElementById('exec-selecter')! as HTMLFormElement;
+  opt.addEventListener('keypress', (ev)=>{
+    if(ev.key === 'Enter') {
+      window.requestAnimationFrame(run);
     }
+  });
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    window.requestAnimationFrame(run);
+    return false;
+  });
+  window.requestAnimationFrame(() => {
+    opt.focus();
   });
 }
 

@@ -10,14 +10,19 @@
 <body>
   <div>
     <div class="selecter">
-      <select id="exec-selecter">
-        <option value="00-hello-feedback">00: Hello, feedback control!</option>
-        <option value="00-hello-feedback-with-delay">00: Hello, feedback control! (with Delay)</option>
-        <option value="01-simple-factory-undershoot">01: Simple factory - undershoot</option>
-        <option value="01-simple-factory-overshoot">01: Simple factory - overshoot</option>
-        <option value="cache-hit">cache-hit</option>
-      </select>
-      <input id="exec-button" type="button" value="exec">
+      <form id="exec-form">
+        <select id="exec-selecter">
+          <option value="00-hello-feedback (P gain=0.5, no delay)">00: Hello, feedback control! (P gain=0.5, no delay)</option>
+          <option value="00-hello-feedback (P gain=1.5, no delay)">00: Hello, feedback control! (P gain=1.5, no delay)</option>
+          <option value="00-hello-feedback (P gain=0.5, 3 steps delay)">00: Hello, feedback control! (P gain=0.5, 3 steps delay)</option>
+          <option value="00-hello-feedback (P gain=1.5, 3 steps delay)">00: Hello, feedback control! (P gain=1.5, 3 steps delay)</option>
+          <option value="00-hello-feedback (P gain=0.25, 3 steps delay)">00: Hello, feedback control! (P gain=0.25, 3 steps delay)</option>
+          <option value="01-simple-factory-undershoot">01: Simple factory - undershoot</option>
+          <option value="01-simple-factory-overshoot">01: Simple factory - overshoot</option>
+          <option value="cache-hit">cache-hit</option>
+        </select>
+        <button id="exec-button" type="submit">Run simulation!</button>
+      </form>
     </div>
   </div>
   <div id="contents" style="height:80vh; width:80vw;">
