@@ -2,7 +2,7 @@ import { ChartData, ChartDataSets } from 'chart.js';
 
 export interface Input {
   step(at: number, dt: number): number;
-  inspect: ChartDataSets;
+  readonly inspect: ChartDataSets;
 }
 
 export interface Output {
@@ -16,9 +16,9 @@ export interface Block {
 }
 
 export class System {
-  input: Input;
-  block: Block;
-  output: Output;
+  private readonly input: Input;
+  private readonly block: Block;
+  private readonly output: Output;
   constructor(input: Input, block: Block, output: Output) {
     this.input = input;
     this.block = block;
@@ -43,8 +43,8 @@ export class System {
  ******************************************************************************/
 
 export class Connect implements Block {
-  private from: Block;
-  private to: Block;
+  private readonly from: Block;
+  private readonly to: Block;
   constructor(from: Block, to: Block) {
     this.from = from;
     this.to = to;
@@ -64,8 +64,8 @@ export function connect(from: Block, to: Block): Connect {
 }
 
 export class Loop implements Block {
-  private forward: Block;
-  private backward: Block;
+  private readonly forward: Block;
+  private readonly backward: Block;
   private prev = 0.0;
   constructor(forward: Block, backward: Block) {
     this.forward = forward;
@@ -88,7 +88,7 @@ export function loop(forward: Block, backward: Block): Loop {
 }
 
 export class Mix implements Block {
-  private blocks: Array<Block>;
+  private readonly blocks: Array<Block>;
   constructor(...blocks: Array<Block>) {
     this.blocks = blocks;
   }
@@ -124,14 +124,13 @@ export function invert():Invert {
 }
 
 export class Delay implements Block {
-  private delay: number;
-  private history: Array<number>;
+  private readonly delay: number;
+  private readonly history: Array<number>;
   private idx: number;
   constructor(delay: number) {
     this.delay = delay | 0;
-    this.history = new Array(this.delay);
+    this.history = new Array(this.delay).map(() => 0);
     this.idx = 0;
-    this.history = this.history.map(() => 0);
   }
   step(at: number, dt: number, input: number): number {
     const val = this.history[this.idx];
@@ -153,9 +152,9 @@ export function delay(time: number):Delay {
  ******************************************************************************/
 
 export class DataRecorder {
-  private label: string;
-  private color: string;
-  private values: Array<number> = [];
+  private readonly label: string;
+  private readonly color: string;
+  private readonly values: Array<number> = [];
   constructor(label: string, color: string) {
     this.label = label;
     this.color = color;
@@ -174,8 +173,8 @@ export class DataRecorder {
 }
 
 export class ConstantSetpoint implements Input {
-  private setPoint: number;
-  private recorder: DataRecorder = new DataRecorder('set point', 'rgba(0, 255, 0, 0.5)');
+  private readonly setPoint: number;
+  private readonly recorder: DataRecorder = new DataRecorder('set point', 'rgba(0, 255, 0, 0.5)');
   constructor(setPoint: number) {
     this.setPoint = setPoint;
   }
@@ -192,7 +191,7 @@ export function constantSetpoint(setPoint: number): ConstantSetpoint {
 }
 
 export class DefaultOutput implements Output {
-  private recorder: DataRecorder = new DataRecorder('output', 'rgba(0, 0, 255, 0.5)');
+  private readonly recorder: DataRecorder = new DataRecorder('output', 'rgba(0, 0, 255, 0.5)');
   constructor() {
   }
   step(at: number, dt: number, output: number): void {

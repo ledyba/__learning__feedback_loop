@@ -35,8 +35,7 @@ function exec(modelName: string): ChartData | null {
 
 function createEngine(): Engine {
   const graph = document.getElementById('graph')! as HTMLCanvasElement;
-  const ctx: CanvasRenderingContext2D = graph.getContext('2d')!;
-  const chart = new Chart(ctx, {
+  const chart = new Chart(graph, {
     type: 'line',
     data: {},
     options: {
@@ -64,7 +63,7 @@ function createEngine(): Engine {
       }
     }
   });
-  return new Engine(graph, ctx, chart);
+  return new Engine(graph, chart);
 }
 
 function run() {
