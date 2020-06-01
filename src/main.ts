@@ -14,13 +14,13 @@ function resize() {
 function exec(modelName: string): ChartData | null {
   switch(modelName) {
     case "00-hello-feedback":
-      return helloFeedback();
+      return helloFeedback(0);
+    case "00-hello-feedback-with-delay":
+      return helloFeedback(2);
     case "01-simple-factory-undershoot":
       return simpleFactory(0.5);
     case "01-simple-factory-overshoot":
       return simpleFactory(1.5);
-    case "cache-hit":
-      return helloFeedback();
     default:
       alert(`Unknown model: ${modelName}`);
       return null;
@@ -34,6 +34,9 @@ function createEngine(): Engine {
     type: 'line',
     data: {},
     options: {
+      animation: {
+        duration: 0
+      },
       scales: {
         xAxes: [
           {

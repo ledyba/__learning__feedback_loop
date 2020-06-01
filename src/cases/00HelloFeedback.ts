@@ -1,5 +1,5 @@
 import { ChartDataSets, ChartData } from 'chart.js';
-import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop } from "../engine/System";
+import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, delay } from "../engine/System";
 import { ProportionalBlock } from '../engine/Controller';
 
 class Buffer implements Block {
@@ -21,14 +21,20 @@ class Buffer implements Block {
   }
 }
 
-export default function helloFeedback(): ChartData {
+export default function helloFeedback(delayStep: number): ChartData {
   const input = constantSetpoint(1000);
   const forward = (()=>{
     const controller = new ProportionalBlock(1.5);
     const plant = new Buffer();
     return connect(controller, plant);
   })();
-  const block = loop(forward, invert());
+  const backward = (()=>{
+    if(delayStep <= 0) {
+      return invert();
+    }
+    return connect(delay(delayStep), invert());
+  })();
+  const block = loop(forward, backward);
   const output = defaultOutput();
   const system = new System(input, block, output);
   return system.exec(1, 30);
