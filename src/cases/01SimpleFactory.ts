@@ -1,6 +1,6 @@
 import { ChartDataSets, ChartData } from 'chart.js';
-import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop } from "../engine/System";
-import { ProportionalBlock } from '../engine/Controller';
+import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, mix } from "../engine/System";
+import { ProportionalBlock, IntegralController } from '../engine/Controller';
 
 /**
  * Hello, feedback!
@@ -33,10 +33,15 @@ class Buffer implements Block {
   }
 }
 
-export default function simpleFactory(gain: number): ChartData {
+export default function simpleFactory(pGain: number, iGain: number): ChartData {
   const input = constantSetpoint(50);
   const forward = (()=>{
-    const controller = new ProportionalBlock(gain);
+    const controller = (()=>{
+      if(iGain <= 0) {
+        return new ProportionalBlock(pGain);
+      }
+      return mix(new ProportionalBlock(pGain), new IntegralController(iGain));
+    })();
     const plant = new Buffer();
     return connect(controller, plant);
   })();

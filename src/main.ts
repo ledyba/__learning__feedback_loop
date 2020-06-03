@@ -24,9 +24,11 @@ function exec(modelName: string): ChartData | null {
     case '00: Hello, feedback control! (P gain=0.25, 3 steps delay)':
       return helloFeedback(0.25, 3, 100);
     case '01: Simple factory - undershoot':
-      return simpleFactory(0.5);
+      return simpleFactory(0.5, 0);
     case '01: Simple factory - overshoot':
-      return simpleFactory(1.5);
+      return simpleFactory(1.5, 0);
+    case '01: Simple factory - with PI':
+      return simpleFactory(0.2, 0.01);
     default:
       alert(`Unknown model: ${modelName}`);
       return null;

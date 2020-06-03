@@ -93,7 +93,7 @@ export class Mix implements Block {
     this.blocks = blocks;
   }
   step(at: number, dt: number, input: number): number {
-    throw new Error("Method not implemented.");
+    return this.blocks.map(it => it.step(at, dt, input)).reduce((a, b)=> a + b);
   }
   get inspect(): ChartDataSets[] {
     const dataSet: ChartDataSets[] = [];
