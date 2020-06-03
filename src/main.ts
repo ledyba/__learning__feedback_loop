@@ -13,19 +13,19 @@ function resize() {
 
 function exec(modelName: string): ChartData | null {
   switch(modelName) {
-    case "00-hello-feedback (P gain=0.5, no delay)":
+    case '00: Hello, feedback control! (P gain=0.5, no delay)':
       return helloFeedback(0.5, 0, 50);
-    case "00-hello-feedback (P gain=1.5, no delay)":
+    case '00: Hello, feedback control! (P gain=1.5, no delay)':
       return helloFeedback(1.5, 0, 50);
-    case "00-hello-feedback (P gain=0.5, 3 steps delay)":
+    case '00: Hello, feedback control! (P gain=0.5, 3 steps delay)':
       return helloFeedback(0.5, 3, 100);
-    case "00-hello-feedback (P gain=1.5, 3 steps delay)":
+    case '00: Hello, feedback control! (P gain=1.5, 3 steps delay)':
       return helloFeedback(1.5, 3, 100);
-    case "00-hello-feedback (P gain=0.25, 3 steps delay)":
+    case '00: Hello, feedback control! (P gain=0.25, 3 steps delay)':
       return helloFeedback(0.25, 3, 100);
-    case "01-simple-factory-undershoot":
+    case '01: Simple factory - undershoot':
       return simpleFactory(0.5);
-    case "01-simple-factory-overshoot":
+    case '01: Simple factory - overshoot':
       return simpleFactory(1.5);
     default:
       alert(`Unknown model: ${modelName}`);
@@ -67,8 +67,8 @@ function createEngine(): Engine {
 }
 
 function run() {
-  const opt = document.getElementById('exec-selecter')! as HTMLFormElement;
-  const data = exec(opt.value);
+  const opt = document.getElementById('exec-selecter')! as HTMLSelectElement;
+  const data = exec(opt.selectedOptions[0].text);
   if(data != null) {
     engine?.updateData(data);
   }
@@ -79,7 +79,7 @@ function main() {
   engine = createEngine();
   window.addEventListener('resize', resize);
   const form = document.getElementById('exec-form')! as HTMLFormElement;
-  const opt = document.getElementById('exec-selecter')! as HTMLFormElement;
+  const opt = document.getElementById('exec-selecter')! as HTMLSelectElement;
   opt.addEventListener('keypress', (ev)=>{
     if(ev.key === 'Enter') {
       window.requestAnimationFrame(run);
