@@ -6,12 +6,14 @@
     "start": "webpack-dev-server",
     "watch": "webpack-dev-server",
     "tsc": "tsc",
-    "build": "webpack"
+    "build": "webpack",
+    "up": "ncu"
   },
   "author": "Kaede Fujisaki",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@types/chart.js": "^2.9.21",
+    "npm-check-updates": "^6.0.1",
     "ts-loader": "^7.0.4",
     "typescript": "^3.9.3",
     "webpack": "^4.43.0",
