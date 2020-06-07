@@ -4,6 +4,8 @@
 
 ## デモサイト
 
+![Publishing GitHub Pages](https://github.com/ledyba/__learning__feedback_loop/workflows/Publishing%20GitHub%20Pages/badge.svg)
+
 https://ledyba.github.io/__learning__feedback_loop/
 
 Github actionsを使ってpushすると勝手にビルドされるようになってます。
