@@ -32,3 +32,20 @@ export class IntegralController implements Block {
     return [];
   }
 }
+
+export class DifferentialController implements Block {
+  private readonly gain: number;
+  private prev: number;
+  constructor(gain: number) {
+    this.gain = gain;
+    this.prev = 0;
+  }
+  step(at: number, dt: number, input: number): number {
+    const diff = input - this.prev;
+    this.prev = input;
+    return (diff / dt) * this.gain;
+  }
+  get inspect(): ChartDataSets[] {
+    return []
+  }
+}
