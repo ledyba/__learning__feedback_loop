@@ -24,7 +24,7 @@ export class Cache {
     this.maxSize_ = size;
   }
 
-  getEntry(id: number): boolean {
+  public getEntry(id: number): boolean {
     const cache = this.map.get(id);
     if(!!cache) {
       this.pushFirst(cache);
@@ -33,20 +33,24 @@ export class Cache {
     const entry = new CacheEntry(id);
     this.map.set(id, entry);
     this.pushFirst(entry);
-    if(this.map.size > this.maxSize_) {
+    if(this.map.size > this.maxSize_ && this.maxSize_ > 0) {
       this.map.delete(this.popLast()!.id);
     }
     return false;
   }
 
   private popLast() : CacheEntry | null {
-    if(!this.last) {
+    const last = this.last;
+    if(!last) {
       return null;
     }
-    const last = this.last;
-    const nextLast = last.next!;
-    this.last = nextLast;
-    nextLast.prev = null;
+    const nextLast = last.next;
+    if(nextLast) {
+      nextLast.prev = null;
+      this.last = nextLast;
+    } else {
+      this.last = null;
+    }
     return last;
   }
 
@@ -60,6 +64,9 @@ export class Cache {
     entry.next = null;
     entry.prev = this.first;
     this.first = entry;
+    if(!this.last) {
+      this.last = entry;
+    }
   }
 
   get maxSize():number {
