@@ -8,7 +8,8 @@
     "tsc": "tsc",
     "build": "webpack",
     "up": "ncu -u && npm install && npm audit fix",
-    "test": "jest --passWithNoTests --watch"
+    "test": "jest --passWithNoTests",
+    "tw": "jest --passWithNoTests --watch"
   },
   "author": "Kaede Fujisaki",
   "license": "GPL-3.0-or-later",
