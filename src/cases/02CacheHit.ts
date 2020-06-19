@@ -16,12 +16,12 @@ class CacheEntry {
 }
 
 export class Cache {
-  private maxSize_:number = 0;
+  private capacity_:number = 0;
   private readonly map:Map<number, CacheEntry | null> = new Map();
   private first: CacheEntry | null = null;
   private last: CacheEntry | null = null;
   constructor(size: number) {
-    this.maxSize_ = size;
+    this.capacity_ = size;
   }
   public has(id: number): boolean {
     return this.map.get(id) !== undefined;
@@ -36,14 +36,16 @@ export class Cache {
         this.first.next = entry;
       }
       this.first = entry;
+      this.first.next = null;
       if(this.last == null) {
         this.last = entry;
       }
-      if(this.map.size > this.maxSize_) {
+      if(this.map.size > this.capacity_) {
         // delete the last used entry
         if(!this.last) {
           fail("There are no entry to remove.");
         }
+        assert(this.map.get(this.last.id) === null, "map[last.id] should be null.");
         this.map.delete(this.last.id);
         this.last = this.last.next;
         if(this.last) {
@@ -53,41 +55,44 @@ export class Cache {
             fail(`Next last is null, but hashmap is not empty: ${this.map.size}`);
           }
           this.first = null;
+          this.last = null;
         }
+      }
+      if(this.capacity_ > 0) {
+        assert(this.first !== null && this.first.next === null, "the first entry must exists and next entry should be null.");
+        assert(this.last !== null && (this.map.size === 1 || this.last.next !== null), "the last entry must exists and next entry should not be null or cache must contain just one entry.");
+      } else {
+        assert(this.first === null && this.last === null, "Both first and last entries should be null, because the capacity of this cache is 0.");
       }
       return false;
     } else if(prev === null) {
-      if(this.last === null) {
-        fail('Hashmap indicates that the entry is last, but last was null.');
+      if(this.last === null || this.first === null) {
+        fail(`Hashmap indicates that the entry is last, but last was null: ${this}`);
       }
-      if(this.first === this.last) {
+      if(this.first === this.last && this.first !== null && this.last !== null) {
         // already on the first, because there are just only one entry.
-        assert(this.map.size === 1);
-        assert(this.first.id === id);
+        assert(this.map.size === 1, "Hashmap should contain only one entry iff first === last");
+        assert(this.first.id === id, "The ID of first should match the requested id.");
         return true;
       }
-      const nextLast = this.last.next;
-      if(nextLast) {
-        this.map.set(nextLast.id, null);
-      }
+      const nextLast = this.last.next!;
+      this.map.set(nextLast.id, null);
       this.map.set(this.last.id, this.first);
-      this.last.next = null;
-      if(this.first) {
-        this.first.next = this.last;
-      }
+      this.first.next = this.last;
+      this.first = this.last;
       this.last = nextLast;
       return true;
     } else {
       const entry = prev.next;
       if(entry === null) {
-        fail('prev.next can not be null. Entry is not the front.');
+        fail("prev.next can not be null. Entry is not the front.");
       }
-      if(this.first === null) {
-        fail('this.first cannot be null. Cache is not empty.');
+      if(this.first === null || this.last === null) {
+        fail("this.first or this.last cannot be null. Because cache is not empty.");
       }
       if(this.first === entry) {
         // It's already first.
-        assert(this.first.next === null, "the first.next should be always null.");
+        assert(this.first.next === null, "first.next should be always null.");
         return true;
       }
       assert(entry.next, "entry.next should be not null, if it's not the front.");
@@ -102,8 +107,8 @@ export class Cache {
     }
   }
 
-  get maxSize():number {
-    return this.maxSize_;
+  get capacity():number {
+    return this.capacity_;
   }
   get size():number {
     return this.map.size;

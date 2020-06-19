@@ -46,13 +46,13 @@ test('test LRU', () => {
 
 test('fuzzing', () => {
   const cache = new Cache(10);
-  const lasts = new Array(10);
-  for(let i = 0; i < 1000; ++i) {
+  const recents = new Array(10);
+  for(let i = 0; i < 10000; ++i) {
     const id = Math.floor(Math.random() * 1000);
-    lasts[i % 10] = id;
+    recents[i % 10] = id;
     cache.getEntry(id);
   }
   for(let id = 0; id < 1000; ++id) {
-    expect(cache.has(id)).toBe(lasts.indexOf(id) >= 0);
+    expect(cache.has(id)).toBe(recents.indexOf(id) >= 0);
   }
 });
