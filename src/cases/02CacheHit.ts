@@ -2,6 +2,7 @@ import { ChartDataSets, ChartData } from 'chart.js';
 import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, mix } from "../engine/System";
 import { ProportionalBlock, IntegralController } from '../engine/Controller';
 import { assert, timeStamp } from 'console';
+import { throws } from 'assert';
 
 /**
  * Cache hit!
@@ -31,12 +32,19 @@ export class Cache {
       this.map.set(id, this.first);
       if(this.first) {
         this.first.next = entry;
-        this.first = entry;
       }
-      if(this.maxSize_ > 0 && this.map.size > this.maxSize_) {
+      this.first = entry;
+      if(!this.last) {
+        this.last = entry;
+      }
+      if(this.map.size > this.maxSize_) {
+        // delete the last used entry
         if(this.last) {
           this.map.delete(this.last.id);
           this.last = this.last.next;
+          if(this.last !== null) {
+            this.map.set(this.last.id, null);
+          }
         }
       }
       return false;
