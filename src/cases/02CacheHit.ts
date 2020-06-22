@@ -15,7 +15,7 @@ class CacheEntry<K> {
   }
 }
 
-export default class Cache<K> {
+export class Cache<K> {
   private capacity_:number = 0;
   private readonly map:Map<K, CacheEntry<K> | null> = new Map();
   private first: CacheEntry<K> | null = null;
