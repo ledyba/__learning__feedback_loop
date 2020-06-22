@@ -75,6 +75,20 @@ test('test LRU', () => {
   expect(cache.has(2)).toBe(true);
 
 });
+test('cahapicy test', () => {
+  const cache = new Cache<number>(3);
+  expect(cache.getEntry(1)).toBe(false);
+  expect(cache.getEntry(2)).toBe(false);
+  expect(cache.getEntry(3)).toBe(false);
+  expect(cache.has(1)).toBe(true);
+  expect(cache.has(2)).toBe(true);
+  expect(cache.has(3)).toBe(true);
+  cache.capacity = 2;
+  expect(cache.has(1)).toBe(false);
+  expect(cache.has(2)).toBe(true);
+  expect(cache.has(3)).toBe(true);
+  
+});
 test('random test', () => {
   for(let j = 0; j < 10000; ++j) {
     const cache = new Cache<number>(10);

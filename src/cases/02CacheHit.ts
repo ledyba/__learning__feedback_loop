@@ -27,6 +27,24 @@ export class Cache<K> {
     return this.map.get(id) !== undefined;
   }
 
+  private makeRoom() {
+    if(this.last === null) {
+      return;
+    }
+    while(this.map.size > this.capacity_) {
+      // delete the last used entry
+      this.map.delete(this.last.id);
+      this.last = this.last.next;
+      if(this.last !== null) {
+        this.map.set(this.last.id, null);
+      } else {
+        this.first = null;
+        this.last = null;
+        break;
+      }
+    }
+  }
+
   public getEntry(id: K): boolean {
     const prev = this.map.get(id);
     if(prev === undefined) {
@@ -40,18 +58,7 @@ export class Cache<K> {
       if(this.last === null) {
         this.last = entry;
       }
-      while(this.map.size > this.capacity_) {
-        // delete the last used entry
-        this.map.delete(this.last.id);
-        this.last = this.last.next;
-        if(this.last !== null) {
-          this.map.set(this.last.id, null);
-        } else {
-          this.first = null;
-          this.last = null;
-          break;
-        }
-      }
+      this.makeRoom();
       return false;
     } else if(prev === null) {
       if(this.first === this.last) {
@@ -88,6 +95,10 @@ export class Cache<K> {
   }
   get size():number {
     return this.map.size;
+  }
+  set capacity(capacity) {
+    this.capacity_ = capacity;
+    this.makeRoom();
   }
   get keys(): K[] {
     const keys: K[] = [];
