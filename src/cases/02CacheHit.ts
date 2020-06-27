@@ -134,7 +134,7 @@ export class PowerLawDemand implements Demand {
     this.cdf = new Array<number>(this.max);
     let sum = 0;
     for(let i = 0; i < this.max; ++i) {
-      let p = Math.pow(1 + i, this.alpha);
+      let p = Math.pow(1 + i, -this.alpha);
       sum += p;
       this.cdf[i] = sum;
     }

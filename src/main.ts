@@ -33,7 +33,7 @@ function exec(modelName: string): ChartData | null {
     case '02: WebCache - UniformDemand':
       return cacheHit(new UniformDemand(100), 500, 1, 3);
     case '02: WebCache - PowerLawDemand':
-      return cacheHit(new PowerLawDemand(100, -2), 500, 1, 3);
+      return cacheHit(new PowerLawDemand(100, 1.5), 500, 1, 3);
     default:
       alert(`Unknown model: ${modelName}`);
       return null;
