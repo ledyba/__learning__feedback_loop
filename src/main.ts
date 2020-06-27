@@ -99,18 +99,27 @@ function main() {
   window.addEventListener('resize', resize);
   const form = document.getElementById('exec-form')! as HTMLFormElement;
   const opt = document.getElementById('exec-selecter')! as HTMLSelectElement;
-  opt.addEventListener('keypress', (ev)=>{
+  window.addEventListener('keypress', (ev)=>{
     if(ev.key === 'Enter') {
       window.requestAnimationFrame(run);
+    }
+  });
+  window.addEventListener('keydown', (ev)=>{
+    switch(ev.key) {
+      case 'ArrowDown':
+        opt.selectedIndex = (opt.selectedIndex + 1) % opt.options.length;
+        ev.preventDefault();
+        break;
+      case 'ArrowUp':
+        opt.selectedIndex = (opt.selectedIndex + opt.options.length - 1) % opt.options.length;
+        ev.preventDefault();
+        break;
     }
   });
   form.addEventListener('submit', (ev) => {
     ev.preventDefault();
     window.requestAnimationFrame(run);
     return false;
-  });
-  window.requestAnimationFrame(() => {
-    opt.focus();
   });
 }
 
