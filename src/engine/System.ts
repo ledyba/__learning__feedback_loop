@@ -188,7 +188,6 @@ export class AverageFilter implements Block {
       this.values[this.idx] = input;
       this.idx++;
     }
-    console.log(this.idx, this.values.length);
     this.total++;
     return this.sum / Math.min(this.total, this.values.length);
   }

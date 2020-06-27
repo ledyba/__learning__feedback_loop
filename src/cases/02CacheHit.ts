@@ -148,7 +148,7 @@ export class PowerLawDemand implements Demand {
     while(min < max) {
       const center = (min + (max - min) / 2) | 0;
       if(this.cdf[center] < p) {
-        min = center;
+        min = center + 1;
       }else{
         max = center;
       }

@@ -2,7 +2,7 @@ import Chart, { ChartData, LinearTickOptions } from 'chart.js';
 import { Engine} from './engine/Engine';
 import helloFeedback from './cases/00HelloFeedback'
 import simpleFactory from './cases/01SimpleFactory';
-import { cacheHit, UniformDemand } from './cases/02CacheHit';
+import { cacheHit, UniformDemand, PowerLawDemand } from './cases/02CacheHit';
 
 let engine: Engine | null;
 
@@ -32,6 +32,8 @@ function exec(modelName: string): ChartData | null {
       return simpleFactory(0.2, 0.01);
     case '02: WebCache - UniformDemand':
       return cacheHit(new UniformDemand(100), 500, 1, 3);
+    case '02: WebCache - PowerLawDemand':
+      return cacheHit(new PowerLawDemand(100, -2), 500, 1, 3);
     default:
       alert(`Unknown model: ${modelName}`);
       return null;
