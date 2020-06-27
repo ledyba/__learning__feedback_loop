@@ -2,7 +2,7 @@ name: Publishing GitHub Pages
 
 on:
   push:
-    branches: [ master ]
+    branches: [ magistra ]
 
 jobs:
   build:
