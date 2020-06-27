@@ -104,6 +104,13 @@ function main() {
       window.requestAnimationFrame(run);
     }
   });
+  opt.addEventListener('keypress', (ev)=>{
+    if(ev.key === 'Enter') {
+      window.requestAnimationFrame(run);
+      ev.preventDefault();
+    }
+  });
+  
   window.addEventListener('keydown', (ev)=>{
     switch(ev.key) {
       case 'ArrowDown':
