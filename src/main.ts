@@ -2,6 +2,7 @@ import Chart, { ChartData, LinearTickOptions } from 'chart.js';
 import { Engine} from './engine/Engine';
 import helloFeedback from './cases/00HelloFeedback'
 import simpleFactory from './cases/01SimpleFactory';
+import { cacheHit, UniformDemand } from './cases/02CacheHit';
 
 let engine: Engine | null;
 
@@ -29,6 +30,8 @@ function exec(modelName: string): ChartData | null {
       return simpleFactory(1.5, 0);
     case '01: Simple factory - with PI':
       return simpleFactory(0.2, 0.01);
+    case '02: WebCache - UniformDemand':
+      return cacheHit(new UniformDemand(100), 500, 2);
     default:
       alert(`Unknown model: ${modelName}`);
       return null;
@@ -41,8 +44,20 @@ function createEngine(): Engine {
     type: 'line',
     data: {},
     options: {
+      tooltips: {enabled: false},
+      events: [],
       animation: {
         duration: 0
+      },
+      hover: {
+        animationDuration: 0
+      },
+      responsiveAnimationDuration: 0,
+      elements: {
+        line: {
+          tension: 0 // disables bezier curves
+        },
+        point: { radius: 0 }
       },
       scales: {
         xAxes: [

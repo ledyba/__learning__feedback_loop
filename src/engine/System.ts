@@ -147,6 +147,64 @@ export function delay(time: number):Delay {
   return new Delay(time);
 }
 
+export class RecursiveFilter implements Block {
+  private readonly alpha: number;
+  private value: number;
+  constructor(alpha: number) {
+    this.alpha = alpha;
+    this.value = 0;
+  }
+  step(at: number, dt: number, input: number): number {
+    this.value = this.value * (1-this.alpha) + input * this.alpha;
+    return this.value;
+  }
+  get inspect(): ChartDataSets[] {
+    return [];
+  }
+}
+
+export function recursiveFilter(alpha: number): RecursiveFilter {
+  return new RecursiveFilter(alpha);
+}
+
+export class AverageFilter implements Block {
+  private readonly values: number[];
+  private idx: number;
+  private total: number;
+  private sum: number;
+  constructor(length: number) {
+    this.values = new Array<number>(length | 0).fill(0);
+    this.idx = 0;
+    this.total = 0;
+    this.sum = 0;
+  }
+  step(at: number, dt: number, input: number): number {
+    if(this.idx + 1 === this.values.length) {
+      this.values[this.idx] = input;
+      this.idx = 0;
+      this.sum = this.values.reduce((a,b)=>a+b);
+    } else {
+      this.sum = this.sum + input - this.values[this.idx];
+      this.values[this.idx] = input;
+      this.idx++;
+    }
+    console.log(this.idx, this.values.length);
+    this.total++;
+    return this.sum / Math.min(this.total, this.values.length);
+  }
+  get length(): number {
+    return this.values.length;
+  }
+  get inspect(): ChartDataSets[] {
+    return [];
+  }
+}
+
+export function averageFilter(length: number):AverageFilter {
+  return new AverageFilter(length);
+}
+
+
 /******************************************************************************
  * Utility implementations
  ******************************************************************************/
@@ -186,8 +244,26 @@ export class ConstantSetpoint implements Input {
     return this.recorder.intoDataSet();
   }
 }
+export class FunctionSetpoint implements Input {
+  private readonly fn: (at: number, dt: number) => number;
+  private readonly recorder: DataRecorder = new DataRecorder('set point', 'rgba(0, 255, 0, 0.5)');
+  constructor(fn: (at: number, dt: number) => number) {
+    this.fn = fn;
+  }
+  step(at: number, dt: number): number {
+    const pt = this.fn(at, dt);
+    this.recorder.record(pt);
+    return pt;
+  }
+  get inspect(): ChartDataSets {
+    return this.recorder.intoDataSet();
+  }
+}
 export function constantSetpoint(setPoint: number): ConstantSetpoint {
   return new ConstantSetpoint(setPoint);
+}
+export function functionSetpoint(fn: (at: number, dt: number) => number): FunctionSetpoint {
+  return new FunctionSetpoint(fn);
 }
 
 export class DefaultOutput implements Output {

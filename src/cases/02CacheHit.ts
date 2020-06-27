@@ -1,5 +1,5 @@
 import { ChartDataSets, ChartData } from 'chart.js';
-import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, mix } from "../engine/System";
+import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, mix, AverageFilter, averageFilter, functionSetpoint } from "../engine/System";
 import { ProportionalBlock, IntegralController } from '../engine/Controller';
 import { assert } from 'console';
 
@@ -109,16 +109,81 @@ export class Cache<K> {
   }
 }
 
-export class WebCache implements Block {
+interface Demand {
+  next(): number;
+}
+
+export class UniformDemand implements Demand {
+  private readonly max: number;
+  constructor(max:number) {
+    this.max = max;
+  }
+  next(): number {
+    return (this.max * Math.random()) | 0;
+  }
+}
+
+export class PowerLawDemand implements Demand {
+  private readonly max: number;
+  private readonly alpha: number;
+  private readonly cdf: number[];
+  private readonly sum: number;
+  constructor(max:number, alpha: number) {
+    this.max = max | 0;
+    this.alpha = alpha;
+    this.cdf = new Array<number>(this.max);
+    let sum = 0;
+    for(let i = 0; i < this.max; ++i) {
+      let p = Math.pow(1 + i, this.alpha);
+      sum += p;
+      this.cdf[i] = sum;
+    }
+    this.sum = sum;
+  }
+  next(): number {
+    const p = (this.sum * Math.random());
+    return this.bisect(p, 0, this.max);
+  }
+  bisect(p: number, min: number, max: number) {
+    while(min < max) {
+      const center = (min + (max - min) / 2) | 0;
+      if(this.cdf[center] < p) {
+        min = center;
+      }else{
+        max = center;
+      }
+    }
+    return min;
+  }
+}
+
+export class WebServer implements Block {
   private readonly cache: Cache<number>;
-  constructor(capacity: number) {
-    this.cache = new Cache(capacity);
+  private readonly demand: Demand;
+  private readonly recorder: DataRecorder = new DataRecorder('cache size', 'rgba(255, 255, 0, 0.5)');
+  constructor(demand: Demand) {
+    this.cache = new Cache(0);
+    this.demand = demand;
   }
   step(at: number, dt: number, input: number): number {
-    return input;
+    this.recorder.record(Math.round(input));
+    this.cache.capacity = Math.round(input);
+    return this.cache.getEntry(this.demand.next()) ? 1 : 0;
   }
   get inspect(): ChartDataSets[] {
-    return [];
+    return [];//[this.recorder.intoDataSet()];
   }
+}
 
+export function cacheHit(demand: Demand, pGain: number, iGain: number): ChartData {
+  const input = functionSetpoint((at, dt) => 0.5 + 0.1 * Math.sin(at / 300));
+  const forward = (()=>{
+    const controller = mix(new ProportionalBlock(pGain), new IntegralController(iGain));
+    const plant = connect(new WebServer(demand), averageFilter(100));
+    return connect(controller, plant);
+  })();
+  const block = loop(forward, invert());
+  const output = defaultOutput();
+  const system = new System(input, block, output);
+  return system.exec(1, 10000);
 }
