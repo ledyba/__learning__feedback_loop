@@ -31,7 +31,7 @@ function exec(modelName: string): ChartData | null {
     case '01: Simple factory - with PI':
       return simpleFactory(0.2, 0.01);
     case '02: WebCache - UniformDemand':
-      return cacheHit(new UniformDemand(100), 500, 2);
+      return cacheHit(new UniformDemand(100), 500, 1, 3);
     default:
       alert(`Unknown model: ${modelName}`);
       return null;

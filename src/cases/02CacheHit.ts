@@ -1,6 +1,6 @@
 import { ChartDataSets, ChartData } from 'chart.js';
 import { constantSetpoint, invert, defaultOutput, System, Block, DataRecorder, connect, loop, mix, AverageFilter, averageFilter, functionSetpoint } from "../engine/System";
-import { ProportionalBlock, IntegralController } from '../engine/Controller';
+import { ProportionalBlock, IntegralController, DifferentialController } from '../engine/Controller';
 import { assert } from 'console';
 
 /**
@@ -175,10 +175,10 @@ export class WebServer implements Block {
   }
 }
 
-export function cacheHit(demand: Demand, pGain: number, iGain: number): ChartData {
+export function cacheHit(demand: Demand, pGain: number, iGain: number, dGain: number): ChartData {
   const input = functionSetpoint((at, dt) => 0.5 + 0.1 * Math.sin(at / 300));
   const forward = (()=>{
-    const controller = mix(new ProportionalBlock(pGain), new IntegralController(iGain));
+    const controller = mix(new ProportionalBlock(pGain), new IntegralController(iGain), new DifferentialController(dGain));
     const plant = connect(new WebServer(demand), averageFilter(100));
     return connect(controller, plant);
   })();
