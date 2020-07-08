@@ -216,12 +216,13 @@ export class DataRecorder {
     this.label = label;
     this.color = color;
   }
-  intoDataSet(): ChartDataSets {
+  intoDataSet(yAxis:string = 'default'): ChartDataSets {
     return {
       label: this.label,
       borderColor: this.color,
       data: this.values,
       fill: false,
+      yAxisID: yAxis
     };
   }
   record(data: number) {

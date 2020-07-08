@@ -41,48 +41,7 @@ function exec(modelName: string): ChartData | null {
 }
 
 function createEngine(): Engine {
-  const graph = document.getElementById('graph')! as HTMLCanvasElement;
-  const chart = new Chart(graph, {
-    type: 'line',
-    data: {},
-    options: {
-      tooltips: {enabled: false},
-      events: [],
-      animation: {
-        duration: 0
-      },
-      hover: {
-        animationDuration: 0
-      },
-      responsiveAnimationDuration: 0,
-      elements: {
-        line: {
-          tension: 0 // disables bezier curves
-        },
-        point: { radius: 0 }
-      },
-      scales: {
-        xAxes: [
-          {
-            //type: 'linear',
-            position: 'bottom',
-            ticks: {
-              beginAtZero: true,
-              maxTicksLimit: 10,
-            }
-          }
-        ],
-        yAxes: [
-          {
-            type: 'linear',
-            ticks: {
-            }
-          }
-        ],
-      }
-    }
-  });
-  return new Engine(graph, chart);
+  return new Engine(document.getElementById('graph')! as HTMLCanvasElement);
 }
 
 function run() {

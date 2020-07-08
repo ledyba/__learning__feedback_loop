@@ -171,7 +171,7 @@ export class WebServer implements Block {
     return this.cache.getEntry(this.demand.next()) ? 1 : 0;
   }
   get inspect(): ChartDataSets[] {
-    return [];//[this.recorder.intoDataSet()];
+    return [this.recorder.intoDataSet('cache-size')];
   }
 }
 
