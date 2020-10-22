@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "start": "npm run watch",
-    "watch": "webpack-cli serve",
+    "watch": "webpack-cli --config webpack.config.js serve",
     "tsc": "tsc",
-    "build": "webpack",
+    "build": "webpack --config webpack.config.js",
     "up": "ncu -u && npm install && npm dedupe && npm audit fix",
     "test": "jest --passWithNoTests",
     "tw": "jest --passWithNoTests --watch"
