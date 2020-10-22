@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "start": "webpack-dev-server",
-    "watch": "webpack-dev-server",
+    "start": "npm run watch",
+    "watch": "webpack-cli serve",
     "tsc": "tsc",
     "build": "webpack",
     "up": "ncu -u && npm install && npm dedupe && npm audit fix",
