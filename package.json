@@ -12,7 +12,7 @@
     "tw": "jest --passWithNoTests --watch"
   },
   "author": "Kaede Fujisaki",
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@types/chart.js": "^2.9.30",
     "@types/jest": "^26.0.20",
